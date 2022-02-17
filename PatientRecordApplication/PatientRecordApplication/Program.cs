@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Charles Simms
+// CIS297
+// Program to display a patient's id, name, and balance then show a minimum balance due
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +12,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 
 
-namespace ConsoleChap17FileIOApp
+namespace PatientRecordSystem
 {
     class Program
     {
@@ -88,24 +91,24 @@ namespace ConsoleChap17FileIOApp
             const int END = 999;
             const string DELIM = ",";
             const string FILENAME = "PatientData.txt";
-            Patient emp = new Patient();
+            Patient pat = new Patient();
             FileStream outFile = new FileStream(FILENAME,
                FileMode.Create, FileAccess.Write);
             StreamWriter writer = new StreamWriter(outFile);
             Write("Enter patient id number or " + END +
                " to quit >> ");
-            emp.PatNum = Convert.ToInt32(ReadLine());
-            while (emp.PatNum != END)
+            pat.PatNum = Convert.ToInt32(ReadLine());
+            while (pat.PatNum != END)
             {
                 Write("Enter last name of patient >> ");
-                emp.Name = ReadLine();
+                pat.Name = ReadLine();
                 Write("Enter balance >> ");
-                emp.Balance = Convert.ToDouble(ReadLine());
-                writer.WriteLine(emp.PatNum + DELIM + emp.Name +
-                   DELIM + emp.Balance);
-                Write("Enter next employee number or " +
+                pat.Balance = Convert.ToDouble(ReadLine());
+                writer.WriteLine(pat.PatNum + DELIM + pat.Name +
+                   DELIM + pat.Balance);
+                Write("Enter next patient number or " +
                    END + " to quit >> ");
-                emp.PatNum = Convert.ToInt32(ReadLine());
+                pat.PatNum = Convert.ToInt32(ReadLine());
             }
             writer.Close();
             outFile.Close();
@@ -116,7 +119,7 @@ namespace ConsoleChap17FileIOApp
         {
             const char DELIM = ',';
             const string FILENAME = "PatientData.txt";
-            Patient emp = new Patient();
+            Patient pat = new Patient();
             FileStream inFile = new FileStream(FILENAME,
                FileMode.Open, FileAccess.Read);
             StreamReader reader = new StreamReader(inFile);
@@ -128,11 +131,11 @@ namespace ConsoleChap17FileIOApp
             while (recordIn != null)
             {
                 fields = recordIn.Split(DELIM);
-                emp.PatNum = Convert.ToInt32(fields[0]);
-                emp.Name = fields[1];
-                emp.Balance = Convert.ToDouble(fields[2]);
+                pat.PatNum = Convert.ToInt32(fields[0]);
+                pat.Name = fields[1];
+                pat.Balance = Convert.ToDouble(fields[2]);
                 WriteLine("{0,-5}{1,-12}{2,8}",
-                   emp.PatNum, emp.Name, emp.Balance.ToString("C"));
+                   pat.PatNum, pat.Name, pat.Balance.ToString("C"));
                 recordIn = reader.ReadLine();
             }
             reader.Close();
@@ -146,17 +149,17 @@ namespace ConsoleChap17FileIOApp
             const char DELIM = ',';
             const int END = 999;
             const string FILENAME = "PatientData.txt";
-            Patient emp = new Patient();
+            Patient pat = new Patient();
             FileStream inFile = new FileStream(FILENAME,
                FileMode.Open, FileAccess.Read);
             StreamReader reader = new StreamReader(inFile);
             string recordIn;
             string[] fields;
-            double minSalary;
+            double minBalance;
             Write("Enter minimum balance to find or " +
                END + " to quit >> ");
-            minSalary = Convert.ToDouble(Console.ReadLine());
-            while (minSalary != END)
+            minBalance = Convert.ToDouble(Console.ReadLine());
+            while (minBalance != END)
             {
                 WriteLine("\n{0,-5}{1,-12}{2,8}\n",
                    "Num", "Name", "Balance");
@@ -165,17 +168,17 @@ namespace ConsoleChap17FileIOApp
                 while (recordIn != null)
                 {
                     fields = recordIn.Split(DELIM);
-                    emp.PatNum = Convert.ToInt32(fields[0]);
-                    emp.Name = fields[1];
-                    emp.Balance = Convert.ToDouble(fields[2]);
-                    if (emp.Balance >= minSalary)
-                        WriteLine("{0,-5}{1,-12}{2,8}", emp.PatNum,
-                           emp.Name, emp.Balance.ToString("C"));
+                    pat.PatNum = Convert.ToInt32(fields[0]);
+                    pat.Name = fields[1];
+                    pat.Balance = Convert.ToDouble(fields[2]);
+                    if (pat.Balance >= minBalance)
+                        WriteLine("{0,-5}{1,-12}{2,8}", pat.PatNum,
+                           pat.Name, pat.Balance.ToString("C"));
                     recordIn = reader.ReadLine();
                 }
                 Write("\nEnter minimum balance to find or " +
                    END + " to quit >> ");
-                minSalary = Convert.ToDouble(Console.ReadLine());
+                minBalance = Convert.ToDouble(Console.ReadLine());
             }
             reader.Close();  // Error occurs if
             inFile.Close(); //these two statements are reversed
@@ -190,23 +193,23 @@ namespace ConsoleChap17FileIOApp
         {
             const int END = 999;
             const string FILENAME = "Data.ser";
-            Person emp = new Person();
+            Person pat = new Person();
             FileStream outFile = new FileStream(FILENAME,
                FileMode.Create, FileAccess.Write);
             BinaryFormatter bFormatter = new BinaryFormatter();
             Write("Enter patient id number or " + END +
                " to quit >> ");
-            emp.PatNum = Convert.ToInt32(ReadLine());
-            while (emp.PatNum != END)
+            pat.PatNum = Convert.ToInt32(ReadLine());
+            while (pat.PatNum != END)
             {
                 Write("Enter last name >> ");
-                emp.Name = ReadLine();
+                pat.Name = ReadLine();
                 Write("Enter balance >> ");
-                emp.Balance = Convert.ToDouble(ReadLine());
-                bFormatter.Serialize(outFile, emp);
+                pat.Balance = Convert.ToDouble(ReadLine());
+                bFormatter.Serialize(outFile, pat);
                 Write("Enter patient id number or " + END +
                    " to quit >> ");
-                emp.PatNum = Convert.ToInt32(ReadLine());
+                pat.PatNum = Convert.ToInt32(ReadLine());
             }
             outFile.Close();
             FileStream inFile = new FileStream(FILENAME,
@@ -215,15 +218,15 @@ namespace ConsoleChap17FileIOApp
                "Num", "Name", "Balance");
             while (inFile.Position < inFile.Length)
             {
-                emp = (Person)bFormatter.Deserialize(inFile);
+                pat = (Person)bFormatter.Deserialize(inFile);
                 WriteLine("{0,-5}{1,-12}{2,8}",
-                   emp.PatNum, emp.Name, emp.Balance.ToString("C"));
+                   pat.PatNum, pat.Name, pat.Balance.ToString("C"));
             }
             inFile.Close();
         }
     }
 
-    class Patient
+    class Patient // renamed to Patient as Employee makes no sense anymore
     {
         public int PatNum { get; set; }
         public string Name { get; set; }
